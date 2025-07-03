@@ -115,6 +115,35 @@
                                         "phone_number": {
                                             "type": "string",
                                             "example": "08123456789"
+                                        },
+                                        "user_photo": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string",
+                                                    "example": "photo_id"
+                                                },
+                                                "images": {
+                                                    "type": "string",
+                                                    "example": "base64imagestring"
+                                                },
+                                                "created_by": {
+                                                    "type": "string",
+                                                    "example": "userA"
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "example": "2025/07/03 01:46:43"
+                                                },
+                                                "updated_by": {
+                                                    "type": "string",
+                                                    "example": "userA"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "example": "2025/07/03 01:46:43"
+                                                }
+                                            },
+                                            "type": "object"
                                         }
                                     },
                                     "type": "object"
@@ -128,6 +157,131 @@
                             "application/json": {
                                 "schema": {
                                     "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthorized"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/change-photo": {
+            "post": {
+                "tags": [
+                    "profile"
+                ],
+                "summary": "Change user photo",
+                "description": "Upload or update user photo as base64 string",
+                "operationId": "changeUserPhoto",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "image"
+                                ],
+                                "properties": {
+                                    "image": {
+                                        "type": "string",
+                                        "example": "base64imagestring"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User photo updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Photo updated successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string",
+                                                    "example": "photo_id"
+                                                },
+                                                "images": {
+                                                    "type": "string",
+                                                    "example": "base64imagestring"
+                                                },
+                                                "created_by": {
+                                                    "type": "string",
+                                                    "example": "userA"
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "example": "2025/07/03 01:46:43"
+                                                },
+                                                "updated_by": {
+                                                    "type": "string",
+                                                    "example": "userA"
+                                                },
+                                                "updated_at": {
+                                                    "type": "string",
+                                                    "example": "2025/07/03 01:46:43"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Image is required"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
                                         "message": {
                                             "type": "string",
                                             "example": "Unauthorized"

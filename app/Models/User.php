@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use App\Models\UserPhoto;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -61,6 +62,14 @@ class User extends Authenticatable implements JWTSubject
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * One to one relation to UserPhoto
+     */
+    public function userPhoto()
+    {
+        return $this->hasOne(UserPhoto::class);
     }
 
     /**
