@@ -5,8 +5,8 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Auth;
-use HasApiTokens;
+use Tymon\JWTAuth\Facades\JWTAuth;
+
 
 use App\Models\User;
 
@@ -60,13 +60,12 @@ class LoginController extends Controller
             ], 401);
         }
 
-        $token = Auth::user()->createToken('api_token')->plainTextToken;
-
+        $token = JWTAuth::fromUser($user);
 
         return response()->json([
             'message' => 'Berhasil login.',
             'user' => $user,
-            'token'=> $token,
+            'token' => $token,
         ], 200);
     }
 }

@@ -114,6 +114,10 @@ class RegisterController extends Controller
         $user->phone_number = $phone_number;
         $user->is_host      = false;
         $user->password     = Hash::make($password);
+        $user->created_by   = $username;
+        $user->created_at   = date('Y-m-d H:i:s');
+        $user->updated_by   = $username;
+        $user->updated_at   = date('Y-m-d H:i:s');
         $user->save();
         
 

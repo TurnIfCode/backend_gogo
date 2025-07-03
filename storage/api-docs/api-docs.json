@@ -81,6 +81,71 @@
                 }
             }
         },
+        "/api/profile": {
+            "get": {
+                "tags": [
+                    "profile"
+                ],
+                "summary": "Get user profile",
+                "description": "Get profile of the authenticated user",
+                "operationId": "getUserProfile",
+                "responses": {
+                    "200": {
+                        "description": "User profile retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "string",
+                                            "example": "uuid"
+                                        },
+                                        "username": {
+                                            "type": "string",
+                                            "example": "userA"
+                                        },
+                                        "name": {
+                                            "type": "string",
+                                            "example": "John Doe"
+                                        },
+                                        "email": {
+                                            "type": "string",
+                                            "example": "john@example.com"
+                                        },
+                                        "phone_number": {
+                                            "type": "string",
+                                            "example": "08123456789"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthorized"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/register": {
             "post": {
                 "tags": [
@@ -182,6 +247,10 @@
         {
             "name": "login",
             "description": "login"
+        },
+        {
+            "name": "profile",
+            "description": "profile"
         },
         {
             "name": "register",
