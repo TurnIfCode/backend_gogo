@@ -14,6 +14,15 @@ class UserPhoto extends Model
         'image',
     ];
 
+    protected $hidden = [
+        'password',
+        'remember_token',
+        'created_at',
+        'updated_at',
+        'created_by',
+        'updated_by',
+    ];
+
     public function user() {
         return $this->belongsTo(User::class);
     }
