@@ -4,14 +4,17 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class UserPhoto extends Model
+class UserTopupTransaction extends Model
 {
     protected $keyType = 'string';
     public $timestamps = false;
     public $incrementing = false;
 
     protected $fillable = [
-        'image',
+        'wallet_id',
+        'coin_amount',
+        'price',
+        'status',
     ];
 
     protected $hidden = [
@@ -20,8 +23,4 @@ class UserPhoto extends Model
         'created_by',
         'updated_by',
     ];
-
-    public function user() {
-        return $this->belongsTo(User::class);
-    }
 }

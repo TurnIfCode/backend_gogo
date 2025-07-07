@@ -5,6 +5,55 @@
         "version": "1.0.0"
     },
     "paths": {
+        "/api/coin": {
+            "get": {
+                "tags": [
+                    "coin"
+                ],
+                "summary": "Get list of coins",
+                "description": "Get all coins ordered by coin ascending",
+                "operationId": "getCoins",
+                "responses": {
+                    "200": {
+                        "description": "List of coins retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "string",
+                                                "example": "uuid"
+                                            },
+                                            "coin": {
+                                                "type": "string",
+                                                "example": "BTC"
+                                            },
+                                            "name": {
+                                                "type": "string",
+                                                "example": "Bitcoin"
+                                            },
+                                            "price": {
+                                                "type": "number",
+                                                "format": "float",
+                                                "example": 12345.67
+                                            },
+                                            "final_price": {
+                                                "type": "number",
+                                                "format": "float",
+                                                "example": 12300.45
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/login": {
             "post": {
                 "tags": [
@@ -81,14 +130,25 @@
                 }
             }
         },
-        "/api/profile": {
+        "/api/profile/{id}": {
             "get": {
                 "tags": [
                     "profile"
                 ],
-                "summary": "Get user profile",
-                "description": "Get profile of the authenticated user",
-                "operationId": "getUserProfile",
+                "summary": "Get user profile by id",
+                "description": "Get profile of the user by user id",
+                "operationId": "getUserProfileById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "User ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "User profile retrieved successfully",
@@ -386,6 +446,320 @@
                     }
                 }
             }
+        },
+        "/api/topup": {
+            "post": {
+                "tags": [
+                    "topup"
+                ],
+                "summary": "Create a new topup transaction",
+                "description": "Create a new user topup transaction with wallet_id and coin_amount",
+                "operationId": "topup",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "wallet_id",
+                                    "coin_amount"
+                                ],
+                                "properties": {
+                                    "wallet_id": {
+                                        "type": "string",
+                                        "example": "wallet_uuid"
+                                    },
+                                    "coin_amount": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 100000
+                                    },
+                                    "price": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "example": 15000
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Topup transaction created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Topup transaction created successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string",
+                                                    "example": "topup_uuid"
+                                                },
+                                                "wallet_id": {
+                                                    "type": "string",
+                                                    "example": "wallet_uuid"
+                                                },
+                                                "coin_amount": {
+                                                    "type": "number",
+                                                    "format": "float",
+                                                    "example": 100000
+                                                },
+                                                "price": {
+                                                    "type": "number",
+                                                    "format": "float",
+                                                    "example": 15000
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "example": "Proses"
+                                                },
+                                                "created_by": {
+                                                    "type": "string",
+                                                    "example": "userA"
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "example": "2025-07-07 15:50:43"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Validation error"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthorized"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/topup-list": {
+            "get": {
+                "tags": [
+                    "topup"
+                ],
+                "summary": "Get list of all topup transactions",
+                "description": "Retrieve all user topup transactions ordered by updated_at descending",
+                "operationId": "listTopupTransactions",
+                "responses": {
+                    "200": {
+                        "description": "List of topup transactions retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "List of topup transactions retrieved successfully"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "string",
+                                                        "example": "topup_uuid"
+                                                    },
+                                                    "wallet_id": {
+                                                        "type": "string",
+                                                        "example": "wallet_uuid"
+                                                    },
+                                                    "coin_amount": {
+                                                        "type": "number",
+                                                        "format": "float",
+                                                        "example": 100000
+                                                    },
+                                                    "price": {
+                                                        "type": "number",
+                                                        "format": "float",
+                                                        "example": 15000
+                                                    },
+                                                    "status": {
+                                                        "type": "string",
+                                                        "example": "Proses"
+                                                    },
+                                                    "created_by": {
+                                                        "type": "string",
+                                                        "example": "userA"
+                                                    },
+                                                    "created_at": {
+                                                        "type": "string",
+                                                        "example": "2025-07-07 15:50:43"
+                                                    },
+                                                    "updated_at": {
+                                                        "type": "string",
+                                                        "example": "2025-07-07 15:55:00"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/wallet/{user_id}": {
+            "get": {
+                "tags": [
+                    "wallet"
+                ],
+                "summary": "Get wallet by user id",
+                "description": "Get wallet details of the user by user id",
+                "operationId": "getWalletByUserId",
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "path",
+                        "description": "User ID",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Wallet retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "string",
+                                            "example": "wallet_id"
+                                        },
+                                        "user_id": {
+                                            "type": "string",
+                                            "example": "user_id"
+                                        },
+                                        "amount": {
+                                            "type": "number",
+                                            "format": "float",
+                                            "example": 1000.5
+                                        },
+                                        "created_at": {
+                                            "type": "string",
+                                            "example": "2025-07-04 14:22:22"
+                                        },
+                                        "updated_at": {
+                                            "type": "string",
+                                            "example": "2025-07-04 14:22:22"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthorized"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Wallet not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Wallet not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
         }
     },
     "components": {
@@ -399,6 +773,10 @@
     },
     "tags": [
         {
+            "name": "coin",
+            "description": "coin"
+        },
+        {
             "name": "login",
             "description": "login"
         },
@@ -409,6 +787,14 @@
         {
             "name": "register",
             "description": "register"
+        },
+        {
+            "name": "topup",
+            "description": "topup"
+        },
+        {
+            "name": "wallet",
+            "description": "wallet"
         }
     ]
 }

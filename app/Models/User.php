@@ -77,6 +77,14 @@ class User extends Authenticatable implements JWTSubject
     }
 
     /**
+     * One to one relation to Wallet
+     */
+    public function wallet()
+    {
+        return $this->hasOne(Wallet::class);
+    }
+
+    /**
      * Get the identifier that will be stored in the subject claim of the JWT.
      *
      * @return mixed

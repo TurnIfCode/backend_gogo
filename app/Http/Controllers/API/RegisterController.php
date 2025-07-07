@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Models\UserPhoto;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 
+// Models
 use App\Models\User;
+use App\Models\UserPhoto;
+use App\Models\Wallet;
 
 class RegisterController extends Controller
 {
@@ -49,11 +51,11 @@ class RegisterController extends Controller
      */
     public function register(Request $request)
     {
-        $username       = trim($request->post('username'));
-        $name           = trim($request->post('name'));
-        $email          = trim($request->post('email'));
-        $phone_number   = trim($request->post('phone_number'));
-        $password       = trim($request->post('password'));
+        $username       = trim($request->input('username'));
+        $name           = trim($request->input('name'));
+        $email          = trim($request->input('email'));
+        $phone_number   = trim($request->input('phone_number'));
+        $password       = trim($request->input('password'));
         
         // Cek username
         if (strlen($username) < 4) {
@@ -143,6 +145,19 @@ class RegisterController extends Controller
         $userPhoto->updated_by   = $username;
         $userPhoto->updated_at   = date('Y-m-d H:i:s');
         $userPhoto->save();
+
+        //buat uuid user photo
+        $idWallet = (string) Str::uuid();
+        // Disini Simpan Walletnya
+        $wallet = new Wallet();
+        $wallet->id = $idWallet;
+        $wallet->user_id = $user->id;
+        $wallet->amount = 0;
+        $wallet->created_by = $username;
+        $wallet->created_at = date(format: 'Y-m-d H:i:s');
+        $wallet->updated_by = $username;
+        $wallet->updated_at = date('Y-m-d H:i:s');
+        $wallet->save();
 
         return response()->json([
             'success' => true,

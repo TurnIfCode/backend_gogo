@@ -11,14 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('user_photos', function (Blueprint $table) {
+        Schema::create('user_topup_transactions', function (Blueprint $table) {
             $table->string('id', 50)->primary();
-            $table->string('user_id', 50);
-            $table->longText('image')->nullable();
+            $table->string('wallet_id', 50);
+            $table->decimal('coin_amount', total: 12, places: 2);
+            $table->decimal('price', total: 12, places: 2);
+            $table->enum('status', ['Proses', 'Selesai', 'Batal'])->default('Proses');
             $table->string('created_by')->nullable();
             $table->timestamp('created_at')->nullable();
             $table->string('updated_by')->nullable();
             $table->timestamp('updated_at')->nullable();
+
+            $table->foreign('wallet_id')->references('id')->on('wallets')->onDelete('cascade');
         });
     }
 
@@ -27,6 +31,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('user_photos');
+        Schema::table('user_topup_transactions', function (Blueprint $table) {
+            $table->dropForeign(['wallet_id']);
+        });
+        Schema::dropIfExists('user_topup_transactions');
     }
 };

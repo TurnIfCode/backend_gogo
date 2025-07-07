@@ -13,12 +13,19 @@ class ProfileController extends Controller
 {
     /**
      * @OA\Get(
-     *     path="/api/profile",
+     *     path="/api/profile/{id}",
      *     tags={"profile"},
-     *     summary="Get user profile",
-     *     description="Get profile of the authenticated user",
-     *     operationId="getUserProfile",
+     *     summary="Get user profile by id",
+     *     description="Get profile of the user by user id",
+     *     operationId="getUserProfileById",
      *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="User ID",
+     *         required=true,
+     *         @OA\Schema(type="string")
+     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="User profile retrieved successfully",
@@ -48,7 +55,7 @@ class ProfileController extends Controller
      * )
      * )
     */
-    public function profile(Request $request) {
+    public function profile(Request $request, $id) {
         $user = JWTAuth::parseToken()->authenticate();
 
         if (!$user) {
@@ -58,13 +65,20 @@ class ProfileController extends Controller
             ],400);
         }
 
-        $dataUser = User::with('userPhoto')->find($user->id);
+        $dataUser = User::with('userPhoto')->find($id);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Success',
-            'data' => $dataUser
-        ]);
+        if (!$dataUser) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User tidak ditemukan.',
+            ], 404);
+        }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Berhasil',
+                'data' => $dataUser
+            ]);
     }
 
     /**
@@ -141,6 +155,18 @@ class ProfileController extends Controller
             ],400);
         }
 
+        // Validate image size max 5MB
+        $imageData = explode(',', $image);
+        $decodedImage = base64_decode(end($imageData));
+        $imageSize = strlen($decodedImage); // size in bytes
+
+        if ($imageSize > 5 * 1024 * 1024) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Ukuran foto maksimal 5MB.',
+            ], 400);
+        }
+
         $userPhoto = UserPhoto::find($userPhotoId);
         $userPhoto->image = $image;
         $userPhoto->updated_by = $user->username;
@@ -150,10 +176,10 @@ class ProfileController extends Controller
         // disini ambil kembali data usernya
         $getDataUser = User::with('userPhoto')->find($user->id);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Foto berhasil diupdate.',
-            'data' => $getDataUser,
-        ]);
+            return response()->json([
+                'success' => true,
+                'message' => 'Foto berhasil diupdate.',
+                'data' => $getDataUser,
+            ]);
     }
 }
