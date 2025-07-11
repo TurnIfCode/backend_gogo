@@ -153,6 +153,7 @@ class RegisterController extends Controller
         $wallet->id = $idWallet;
         $wallet->user_id = $user->id;
         $wallet->amount = 0;
+        $wallet->coin_amount = 0;
         $wallet->created_by = $username;
         $wallet->created_at = date(format: 'Y-m-d H:i:s');
         $wallet->updated_by = $username;

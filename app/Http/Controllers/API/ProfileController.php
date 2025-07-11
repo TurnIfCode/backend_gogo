@@ -74,11 +74,11 @@ class ProfileController extends Controller
             ], 404);
         }
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Berhasil',
-                'data' => $dataUser
-            ]);
+        return response()->json([
+            'success' => true,
+            'message' => 'Berhasil',
+            'data' => $dataUser
+        ]);
     }
 
     /**
@@ -151,21 +151,59 @@ class ProfileController extends Controller
         if (!$image) {
             return response()->json([
                 'success' => false,
-                'message' => 'Foto harus diupload.',
+                'message' => 'Gambar harus diisi',
             ],400);
         }
 
-        // Validate image size max 5MB
-        $imageData = explode(',', $image);
-        $decodedImage = base64_decode(end($imageData));
-        $imageSize = strlen($decodedImage); // size in bytes
-
-        if ($imageSize > 5 * 1024 * 1024) {
+        // Check base64 string length to prevent memory exhaustion
+        $maxBase64Length = (5 * 1024 * 1024) * 4 / 3; // approx base64 length for 5MB binary
+        if (strlen($image) > $maxBase64Length) {
             return response()->json([
                 'success' => false,
-                'message' => 'Ukuran foto maksimal 5MB.',
+                'message' => 'Ukuran gambar terlalu besar, maksimal 5MB',
             ], 400);
         }
+
+        // Decode base64 image
+        $imageData = explode(',', $image);
+        $decodedImage = base64_decode(end($imageData));
+
+        // Resize image to max 5MB if larger than 128MB
+        $maxSizeLarge = 5 * 1024 * 1024; // 5MB in bytes
+        if (strlen($decodedImage) > 134217728) { // 128MB in bytes
+            // Create image resource from decoded data
+            $imageResource = imagecreatefromstring($decodedImage);
+            if ($imageResource === false) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Gambar tidak valid',
+                ], 400);
+            }
+
+            // Calculate scale ratio
+            $scale = sqrt($maxSizeLarge / strlen($decodedImage));
+            $width = imagesx($imageResource);
+            $height = imagesy($imageResource);
+            $newWidth = (int)($width * $scale);
+            $newHeight = (int)($height * $scale);
+
+            // Create new resized image
+            $resizedImage = imagecreatetruecolor($newWidth, $newHeight);
+            imagecopyresampled($resizedImage, $imageResource, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
+
+            // Capture output buffer to get resized image data
+            ob_start();
+            imagejpeg($resizedImage, null, 85); // quality 85
+            $resizedImageData = ob_get_clean();
+
+            imagedestroy($imageResource);
+            imagedestroy($resizedImage);
+
+            // Re-encode to base64
+            $base64Prefix = explode(',', $image)[0];
+            $image = $base64Prefix . ',' . base64_encode($resizedImageData);
+        }
+
 
         $userPhoto = UserPhoto::find($userPhotoId);
         $userPhoto->image = $image;
@@ -178,7 +216,7 @@ class ProfileController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'Foto berhasil diupdate.',
+                'message' => 'Foto berhasil diupdate',
                 'data' => $getDataUser,
             ]);
     }

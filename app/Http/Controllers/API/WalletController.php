@@ -32,6 +32,7 @@ class WalletController extends Controller
      *             @OA\Property(property="id", type="string", example="wallet_id"),
      *             @OA\Property(property="user_id", type="string", example="user_id"),
      *             @OA\Property(property="amount", type="number", format="float", example=1000.50),
+     *             @OA\Property(property="coin_amount", type="number", format="float", example=1000.50),
      *             @OA\Property(property="created_at", type="string", example="2025-07-04 14:22:22"),
      *             @OA\Property(property="updated_at", type="string", example="2025-07-04 14:22:22")
      *         )
@@ -73,6 +74,7 @@ class WalletController extends Controller
 
         $walletData = $wallet->toArray();
         $walletData['amount'] = round((float)$walletData['amount'], 2);
+        $walletData['coin_amount'] = round((float)$walletData['coin_amount'], 2);
 
         return response()->json([
             'success' => true,

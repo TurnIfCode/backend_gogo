@@ -4,30 +4,27 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class UserTopupTransaction extends Model
+class LiveStream extends Model
 {
     protected $keyType = 'string';
     public $timestamps = false;
     public $incrementing = false;
 
     protected $fillable = [
-        'wallet_id',
-        'coin_amount',
-        'price',
+        'user_id',
+        'live_id',
+        'username',
         'status',
-        'bank_name',
-        'account_number',
-        'image'
     ];
 
     protected $hidden = [
+        'started_at',
+        'ended_at',
         'created_at',
         'updated_at',
-        'created_by',
-        'updated_by',
-        'approved_by',
-        'approved_at',
-        'canceled_by',
-        'canceled_at',
     ];
+
+    public function user() {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }

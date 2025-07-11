@@ -11,14 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('wallets', function (Blueprint $table) {
+        Schema::create('live_streams', function (Blueprint $table) {
             $table->string('id', 50)->primary();
             $table->string('user_id', 50);
-            $table->decimal('amount', total: 12, places: 2);
-            $table->decimal('coin_amount', total: 12, places: 2);
-            $table->string('created_by')->nullable();
+            $table->string('live_id')->nullable();
+            $table->string('username')->nullable();
+            $table->enum('status', ['live', 'ended'])->default('live');
+            $table->timestamp('started_at')->nullable();
+            $table->timestamp('ended_at')->nullable();
             $table->timestamp('created_at')->nullable();
-            $table->string('updated_by')->nullable();
             $table->timestamp('updated_at')->nullable();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
@@ -30,9 +31,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('wallets', function (Blueprint $table) {
+        Schema::table('live_streams', function (Blueprint $table) {
             $table->dropForeign(['user_id']);
         });
-        Schema::dropIfExists('wallets');
+        Schema::dropIfExists('live_streams');
     }
 };

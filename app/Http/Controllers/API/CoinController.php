@@ -51,7 +51,7 @@ class CoinController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'List of coins retrieved successfully',
+            'message' => 'Daftar koin berhasil diambil',
             'data' => $coins
         ]);
     }

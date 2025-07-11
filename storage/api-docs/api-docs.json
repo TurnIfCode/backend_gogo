@@ -54,6 +54,250 @@
                 }
             }
         },
+        "/api/live-stream/list": {
+            "get": {
+                "tags": [
+                    "LiveStream"
+                ],
+                "summary": "List live streams with status 'live' ordered by started_at descending",
+                "operationId": "f2a45873dcf894ab6d497bd12bf6d267",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number for pagination",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of live streams",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "string",
+                                                        "example": "uuid"
+                                                    },
+                                                    "user_id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "live_id": {
+                                                        "type": "string",
+                                                        "example": "abc123"
+                                                    },
+                                                    "username": {
+                                                        "type": "string",
+                                                        "example": "user1"
+                                                    },
+                                                    "status": {
+                                                        "type": "string",
+                                                        "example": "live"
+                                                    },
+                                                    "started_at": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": "2023-07-10T14:00:00Z"
+                                                    },
+                                                    "ended_at": {
+                                                        "type": "string",
+                                                        "format": "date-time",
+                                                        "example": null
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/live-stream/start": {
+            "post": {
+                "tags": [
+                    "LiveStream"
+                ],
+                "summary": "Start a live stream by setting live_id",
+                "operationId": "5ce6e8c0c7a3782d5d2f1f6037b9e224",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "live_id"
+                                ],
+                                "properties": {
+                                    "live_id": {
+                                        "type": "string",
+                                        "example": "abc123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Live stream started successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Live stream started successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "The live_id field is required."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Live stream not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Live stream not found for user."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/live-stream/end": {
+            "post": {
+                "tags": [
+                    "LiveStream"
+                ],
+                "summary": "End a live stream by live_id",
+                "operationId": "144dca8ab0af8b3b224b3f75b7c30d88",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "live_id"
+                                ],
+                                "properties": {
+                                    "live_id": {
+                                        "type": "string",
+                                        "example": "abc123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Live stream ended successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Live stream ended successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "The live_id field is required."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Live stream not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Live stream not found for user."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/login": {
             "post": {
                 "tags": [
@@ -453,7 +697,7 @@
                     "topup"
                 ],
                 "summary": "Create a new topup transaction",
-                "description": "Create a new user topup transaction with wallet_id and coin_amount",
+                "description": "Create a new user topup transaction with user_id, wallet_id, coin_amount and price",
                 "operationId": "topup",
                 "requestBody": {
                     "required": true,
@@ -461,10 +705,16 @@
                         "application/json": {
                             "schema": {
                                 "required": [
+                                    "user_id",
                                     "wallet_id",
-                                    "coin_amount"
+                                    "coin_amount",
+                                    "price"
                                 ],
                                 "properties": {
+                                    "user_id": {
+                                        "type": "string",
+                                        "example": "user_uuid"
+                                    },
                                     "wallet_id": {
                                         "type": "string",
                                         "example": "wallet_uuid"
@@ -668,6 +918,265 @@
                 ]
             }
         },
+        "/api/topup/{id}/cancel": {
+            "post": {
+                "tags": [
+                    "topup"
+                ],
+                "summary": "Cancel a topup transaction",
+                "description": "Cancel a user topup transaction by ID",
+                "operationId": "cancelTopupTransaction",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the topup transaction to cancel",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Topup transaction cancelled successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Topup transaction cancelled successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string",
+                                                    "example": "topup_uuid"
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "example": "Cancelled"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Topup transaction not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Topup transaction not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthorized"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/topup/{id}/upload": {
+            "post": {
+                "tags": [
+                    "topup"
+                ],
+                "summary": "Upload bank details and image for a topup transaction",
+                "description": "Upload bank_name, account_number, and base64 encoded image for a user topup transaction by ID",
+                "operationId": "uploadTopupTransaction",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the topup transaction to upload details for",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "bank_name",
+                                    "account_number",
+                                    "image"
+                                ],
+                                "properties": {
+                                    "bank_name": {
+                                        "type": "string",
+                                        "example": "Bank ABC"
+                                    },
+                                    "account_number": {
+                                        "type": "string",
+                                        "example": "1234567890"
+                                    },
+                                    "image": {
+                                        "description": "Base64 encoded image string",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Topup transaction details uploaded successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Topup transaction details uploaded successfully"
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string",
+                                                    "example": "topup_uuid"
+                                                },
+                                                "bank_name": {
+                                                    "type": "string",
+                                                    "example": "Bank ABC"
+                                                },
+                                                "account_number": {
+                                                    "type": "string",
+                                                    "example": "1234567890"
+                                                },
+                                                "image": {
+                                                    "description": "Base64 encoded image string",
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Validation error"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Topup transaction not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Topup transaction not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthorized"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/wallet/{user_id}": {
             "get": {
                 "tags": [
@@ -703,6 +1212,11 @@
                                             "example": "user_id"
                                         },
                                         "amount": {
+                                            "type": "number",
+                                            "format": "float",
+                                            "example": 1000.5
+                                        },
+                                        "coin_amount": {
                                             "type": "number",
                                             "format": "float",
                                             "example": 1000.5
@@ -775,6 +1289,10 @@
         {
             "name": "coin",
             "description": "coin"
+        },
+        {
+            "name": "LiveStream",
+            "description": "LiveStream"
         },
         {
             "name": "login",
